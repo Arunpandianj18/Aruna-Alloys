@@ -20,7 +20,7 @@
 #     with sr.Microphone() as source:
 #         print("Listening...")
 #         audio = recognizer.listen(source)
-#         try:
+#         try:5
 #             command = recognizer.recognize_google(audio)
 #             print(f"You said: {command}")
 #             return command.lower()
