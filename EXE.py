@@ -3,6 +3,7 @@ import os
 import pyodbc
 import datetime
 from pymodbus.client import ModbusTcpClient
+import webbrowser
 
 teslead_db = None
 TesleadSmartSyncX = None
@@ -60,5 +61,35 @@ os.system("cmd /c mysqldump --database qnq_completed --single-transaction --add-
 
 def hmi_sync():
     global teslead_db, TesleadSmartSyncX
-    TesleadSmartSyncX = ModbusTcpClient('192.168.1.120')
+    ip_address = teslead_db.execute("select ip_address from master_ip_address;").fetchone()[0]
+    TesleadSmartSyncX = ModbusTcpClient(ip_address)
+    TesleadSmartSyncX.connect()
 hmi_sync()
+
+webbrowser.open("http://localhost/aruna/")
+
+def getstatus(xad):
+    global TesleadSmartSyncX
+    while True:
+        try:
+            return TesleadSmartSyncX.read_holding_registers(xad, 1).registers[0]
+        except Exception as e:
+            print(f"Error in getstatus: {e}")
+            local_db()
+            hmi_sync()
+def setstatus(xad, value):
+    global TesleadSmartSyncX
+    while True:
+        try:
+            TesleadSmartSyncX.write_register(int(xad), int(value))
+            return None
+        except Exception as e:
+            print(f"Error in setstatus: {e}")
+            local_db()
+            hmi_sync()
+
+def main_thread():
+    global teslead_db, TesleadSmartSyncX
+    while True:
+        
+            
