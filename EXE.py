@@ -91,5 +91,9 @@ def setstatus(xad, value):
 def main_thread():
     global teslead_db, TesleadSmartSyncX
     while True:
-        
+        actual_time = getstatus(2006)
+        actual_pressure = getstatus(2008)
+        cycle_start = getstatus(2009)
+        start_stop = getstatus(2010)
+        valve_s
             
